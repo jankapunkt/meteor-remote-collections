@@ -1,8 +1,8 @@
-* jkuester:remote-collections *
+# jkuester:remote-collections
 
 Allows to subscribe and load data from remote collections via ddp, wrapped in manager class.
 
-** Usage **
+### Usage
 
 ```javascript
 import {RemoteCollections} from 'meteor/jkuester:remote-collections';
@@ -27,3 +27,7 @@ Meteor.startup(()=>{
     RemoteCollections.loadRemotSubscriptions({id:REMOTE_COLLECTION_1, method:REMOTE_SUBS_METHOD_1});
 });
 ```
+
+### Licence
+
+MIT Licence, see licence file.
