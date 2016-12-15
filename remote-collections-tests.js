@@ -9,13 +9,16 @@ import {RemoteCollections} from "meteor/jkuester:remote-collections";
 //------------------------------------------------------------------//
 //  GLOBAL USAGE AMONG ALL TESTS
 //------------------------------------------------------------------//
-
+//NOTE: Make sure you a second application with the specific methods
+// running on the specific port.
 
 const CURRENT_CONNECTION_ID = "tinytest-current-connection";
 const CURRENT_CONNECTION_URL = "http://localhost:3030";
 
 const CURRENT_REMOTE_LOAD_METHOD = 'ddp.getPrivateDatabases';
 const CURRENT_REMOTE_SUBSCRIBE_METHOD = "ddp.getAvailableSubscriptions";
+
+const EXPECTED_COLLECTION_NAME = "test";
 
 //------------------------------------------------------------------//
 //  STARTUP SETTINGS
@@ -64,11 +67,23 @@ Tinytest.add('remote-collections - create single remote ddp connections', functi
         }
         ,
     };
+
     RemoteCollections.loadRemoteCollections({id:CURRENT_CONNECTION_ID, method:CURRENT_REMOTE_LOAD_METHOD, observe:observe});
     const collections = RemoteCollections.getCollections();
     test.isNotNull(collections);
-    test.equal(Object.keys(collections).length, 1);
-    
+
+    const collectionsArr =  Object.keys(collections);
+    test.equal(collectionsArr.length, 1);
+
+    const currentCollection = collectionsArr[0];
+    test.isNotNull(currentCollection);
+
+    test.equal(currentCollection.name, EXPECTED_COLLECTION_NAME);
+    //test.notEqual(currentCollection.find().count(), 0);
+
+    const subscriptions = RemoteCollections.getSubscriptionsById(CURRENT_CONNECTION_ID);
+    console.log(subscriptions);
+
 });
 
 

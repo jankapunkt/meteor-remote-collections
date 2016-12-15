@@ -6,6 +6,7 @@ class RemoteCollectionManager {
     constructor() {
         this.REMOTE_COLLECTIONS = {};
         this.remotes = {};
+        this.subscriptions = {};
         this.debug = false;
     }
 
@@ -120,6 +121,13 @@ class RemoteCollectionManager {
         }
     }
 
+    getAllSubscriptions(){
+        return this.subscriptions;
+    }
+
+    getSubscriptionsById(id){
+        return this.subscriptions[id];
+    }
 
     /**
      * Subscribes to remote collections via ddp. Call on/in meteor.startup() function.
@@ -164,7 +172,12 @@ class RemoteCollectionManager {
             if (availableSubscriptions) {
                 //if there are any, subscribe now!
                 for (let subsciptionName of availableSubscriptions) {
-                    remote.subscribe(subsciptionName);
+                    if (this.subscriptions[id] == null)
+                        this.subscriptions[id] = {};
+
+                    const currentSubs = this.subscriptions[id];
+                    currentSubs[subsciptionName] = remote.subscribe(subsciptionName);
+                    this.subscriptions[id] = currentSubs;
                 }
             }
             return true;
