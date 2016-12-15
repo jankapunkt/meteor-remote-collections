@@ -34,7 +34,7 @@ class RemoteCollectionManager {
      * @returns {null|any|*}
      */
     getDDPConnection(id) {
-        return this.remote;
+        return this.remotes[id];
     }
 
     getAllDDPConnectionIds() {
@@ -44,7 +44,7 @@ class RemoteCollectionManager {
     /**
      * Returns all added ddp connection objects.
      */
-    getAllDDPConnectins() {
+        getAllDDPConnections() {
         return this.remotes;
     }
 

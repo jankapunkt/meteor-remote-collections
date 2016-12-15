@@ -13,12 +13,12 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.4.2.3');
   api.use('ecmascript');
-  api.mainModule('remote-collections.js');
+  api.mainModule('remote-collections.js', ['server']);
 });
 
 Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
-  api.use('remote-collections');
-  api.mainModule('remote-collections-tests.js');
+  api.use('jkuester:remote-collections');
+  api.mainModule('remote-collections-tests.js', 'server');
 });
