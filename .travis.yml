@@ -7,7 +7,7 @@ before_install:
   - "curl -L https://git.io/ejPSng | /bin/sh"
   - "meteor create remote-app"
   - "cd remote-app"
-  - "meteor install"
+  - "meteor npm install"
   - "meteor mongo"
   - "db.createCollection('tests')"
   - "db.tests.insert({name:'john doe'})"
