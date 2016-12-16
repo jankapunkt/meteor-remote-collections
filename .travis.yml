@@ -8,11 +8,12 @@ before_install:
   - "meteor create remote-app"
   - "cd remote-app"
   - "meteor npm install"
+  - "meteor --port=3030 &"
   - "meteor mongo"
   - "db.createCollection('tests')"
   - "db.tests.insert({name:'john doe'})"
   - "exit"
-  - "meteor --port=3030"
+  - "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`"
 
 
 env:
