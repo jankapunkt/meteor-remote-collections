@@ -5,6 +5,7 @@ node_js:
 
 before_install:
   - "curl -L https://git.io/ejPSng | /bin/sh"
+  - "npm -g install mmongo"
   - "meteor create remote-app"
   - "cd remote-app"
   - "meteor npm install"
@@ -19,16 +20,14 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+      -
 
 before_script:
   - "echo 'sleep 60 seconds until meteor start completed'"
   - "sleep 60;"
   - "export PATH=$HOME/.meteor:$PATH"
   - "echo $PATH"
-  - "meteor mongo"
-  - "db.createCollection('tests')"
-  - "db.tests.insert({name:'john doe'})"
-  - "exit"
+  - "meteor mongo --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
   - "cd $HOME"
 
 script:
