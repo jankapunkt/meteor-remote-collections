@@ -18,14 +18,44 @@ const CURRENT_CONNECTION_URL = "http://localhost:3030";
 const CURRENT_REMOTE_LOAD_METHOD = 'ddp.getPrivateDatabases';
 const CURRENT_REMOTE_SUBSCRIBE_METHOD = "ddp.getAvailableSubscriptions";
 
-const EXPECTED_COLLECTION_NAME = "test";
+const EXPECTED_COLLECTION_NAME = "tests";
+
+GLOBAL_TEST_OBJ = {};
 
 //------------------------------------------------------------------//
 //  STARTUP SETTINGS
 //------------------------------------------------------------------//
 
 Meteor.startup(() => {
-    RemoteCollections.loadRemotSubscriptions({id: CURRENT_CONNECTION_ID, method: CURRENT_REMOTE_SUBSCRIBE_METHOD });
+
+    Tinytest.add('remote-collections - subscriptions', function (test) {
+        const results = RemoteCollections.loadRemotSubscriptions({id: CURRENT_CONNECTION_ID, method: CURRENT_REMOTE_SUBSCRIBE_METHOD });
+        testExists(test, results);
+        test.equal(results[CURRENT_CONNECTION_ID], true);
+
+        const subscriptions = RemoteCollections.getSubscriptionsById(CURRENT_CONNECTION_ID);
+        testExists(test, subscriptions);
+
+
+        const collections = RemoteCollections.getCollections();
+        testExists(test, collections);
+
+        const collectionsNames =  Object.keys(collections);
+        test.equal(collectionsNames.length, 1);
+
+        const currentCollectionName = collectionsNames[0];
+        testExists(test, currentCollectionName);
+        test.equal(currentCollectionName, EXPECTED_COLLECTION_NAME);
+
+        const currentCollection = collections[EXPECTED_COLLECTION_NAME];
+        testExists(test, currentCollection);
+        test.notEqual(currentCollection.hasOwnProperty('find'), true);
+
+        const found = currentCollection.find({});
+        testExists(test,found);
+        //test.notEqual(found.count(), 0); //TODO why is 0 here? Items are added though...
+    });
+
 });
 
 
@@ -34,11 +64,11 @@ Tinytest.add('remote-collections - import and initial status', function (test) {
 
     //importing a fresh RemoteCollections class
 
-    test.isNotNull(RemoteCollections);
+    testExists(test, RemoteCollections);
 
     const initialRemoteCollections = RemoteCollections.getCollections();
+    testObjectHasChildren(test, initialRemoteCollections, 0);
     test.equal(initialRemoteCollections, {});
-    test.equal(Object.keys(initialRemoteCollections).length, 0);
 
 });
 
@@ -48,44 +78,59 @@ Tinytest.add('remote-collections - create single remote ddp connections', functi
 
     RemoteCollections.addDDPConnectionURL(CURRENT_CONNECTION_ID, CURRENT_CONNECTION_URL);
     const connection = RemoteCollections.getDDPConnection(CURRENT_CONNECTION_ID);
-    test.isNotNull(connection);
+    testExists(test, connection);
 
     const allConnections = RemoteCollections.getAllDDPConnections();
-    test.isNotNull(allConnections);
-    test.equal(Object.keys(allConnections).length, 1);
+    testObjectHasChildren(test, allConnections, 1);
+
     //test.equal(connection.status().connected, true, "connection is not connected to remote " + CURRENT_CONNECTION_URL);
+    //GLOBAL_TEST_OBJ = test;
     const observe = {
         added: function (item) {
-            console.log('-- remote item added--');
-            console.log(item);
+            //console.log('-- remote item added--');
+            //console.log(item);
+            //GLOBAL_TEST_OBJ.isNotNull(item);
         }
         ,
 
         removed: function (item) {
-            console.log('-- remote items removed--');
-            console.log(item);
+            //console.log('-- remote items removed--');
+            //console.log(item);
+            //GLOBAL_TEST_OBJ.isNotNull(item);
         }
         ,
     };
 
     RemoteCollections.loadRemoteCollections({id:CURRENT_CONNECTION_ID, method:CURRENT_REMOTE_LOAD_METHOD, observe:observe});
     const collections = RemoteCollections.getCollections();
-    test.isNotNull(collections);
+    testExists(test, collections);
 
-    const collectionsArr =  Object.keys(collections);
-    test.equal(collectionsArr.length, 1);
+    const collectionsNames =  Object.keys(collections);
+    test.equal(collectionsNames.length, 1);
 
-    const currentCollection = collectionsArr[0];
-    test.isNotNull(currentCollection);
+    const currentCollectionName = collectionsNames[0];
+    testExists(test, currentCollectionName);
+    test.equal(currentCollectionName, EXPECTED_COLLECTION_NAME);
 
-    test.equal(currentCollection.name, EXPECTED_COLLECTION_NAME);
-    //test.notEqual(currentCollection.find().count(), 0);
+    const currentCollection = collections[EXPECTED_COLLECTION_NAME];
+    testExists(test, currentCollection);
+    test.notEqual(currentCollection.hasOwnProperty('find'), true);
 
-    const subscriptions = RemoteCollections.getSubscriptionsById(CURRENT_CONNECTION_ID);
-    console.log(subscriptions);
+    const found = currentCollection.find({});
+    testExists(test,found);
 
 });
 
 
 
+function testExists(test, obj){
+    test.isNotNull(obj);
+    test.isNotUndefined(obj);
+}
 
+function testObjectHasChildren(test, obj, expectedChildCount){
+    testExists(test, obj);
+    const keys = Object.keys(obj);
+    testExists(test, keys);
+    test.equal(keys.length, expectedChildCount);
+}
