@@ -9,11 +9,7 @@ before_install:
   - "cd remote-app"
   - "meteor npm install"
   - "meteor --port=3030"
-  - "meteor mongo"
-  - "db.createCollection('tests')"
-  - "db.tests.insert({name:'john doe'})"
-  - "exit"
-  - "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`"
+
 
 env:
   - CXX=g++-4.8
@@ -23,3 +19,15 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+
+before_script:
+  - "meteor mongo"
+  - "db.createCollection('tests')"
+  - "db.tests.insert({name:'john doe'})"
+  - "exit"
+
+script:
+  - "meteor test-packages jkuester:remote-collections"
+
+after_script:
+  - "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`"
