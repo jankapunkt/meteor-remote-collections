@@ -8,8 +8,7 @@ before_install:
   - "meteor create remote-app"
   - "cd remote-app"
   - "meteor npm install"
-  - "meteor --port=3030 &"
-
+  - "xterm -e 'meteor --port=3030'"
 
 env:
   - CXX=g++-4.8
