@@ -29,7 +29,7 @@ GLOBAL_TEST_OBJ = {};
 Meteor.startup(() => {
 
     Tinytest.add('remote-collections - subscriptions', function (test) {
-        const results = RemoteCollections.loadRemotSubscriptions({id: CURRENT_CONNECTION_ID, method: CURRENT_REMOTE_SUBSCRIBE_METHOD });
+        const results = RemoteCollections.loadRemoteSubscriptions({id: CURRENT_CONNECTION_ID, method: CURRENT_REMOTE_SUBSCRIBE_METHOD });
         testExists(test, results);
         test.equal(results[CURRENT_CONNECTION_ID], true);
 

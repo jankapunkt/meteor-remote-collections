@@ -7,9 +7,6 @@ Allows to subscribe and load data from remote collections via ddp, wrapped in ma
 ```javascript
 import {RemoteCollections} from 'meteor/jkuester:remote-collections';
 
-
-
-
 const REMOTE_COLLECTION_1 = "some-remote-collection-id"; //you can use a hash fct if you want
 const REMOTE_URL_1 = 'http://localhost:3030';
 const REMOTE_METHOD_1 = 'ddp.getPrivateDatabases';
@@ -17,7 +14,7 @@ const REMOTE_SUBS_METHOD_1 = 'ddp.getAvailableSubscriptions';
 
 //subscriptions must be put in startup
 Meteor.startup(()=>{
-    RemoteCollections.loadRemotSubscriptions({id:REMOTE_COLLECTION_1, method:REMOTE_SUBS_METHOD_1});
+    RemoteCollections.loadRemoteSubscriptions({id:REMOTE_COLLECTION_1, method:REMOTE_SUBS_METHOD_1});
 });
 
 

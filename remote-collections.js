@@ -135,7 +135,7 @@ class RemoteCollectionManager {
      * @param params.method the method name. Must not be null
      * @returns {{}} Returns an object with id-boolean pairs. (For each id a result value is attached.)
      */
-    loadRemotSubscriptions(params) {
+    loadRemoteSubscriptions(params) {
         if (!params)
             throw new Meteor.Error("Must set a parameter object!");
         if (!params.method)
