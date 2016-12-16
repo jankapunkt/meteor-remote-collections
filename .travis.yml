@@ -11,9 +11,6 @@ before_install:
   - "meteor --port=3030 &"
 
 
-services:
-
-
 env:
   - CXX=g++-4.8
 addons:
@@ -24,8 +21,8 @@ addons:
       - g++-4.8
 
 before_script:
-  - "echo 'sleep 30 seconds until meteor start completed'"
-  - "sleep 10;"
+  - "echo 'sleep 60 seconds until meteor start completed'"
+  - "sleep 60;"
   - "export PATH=$HOME/.meteor:$PATH"
   - "echo $PATH"
   - "meteor mongo"
