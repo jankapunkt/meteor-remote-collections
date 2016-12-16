@@ -5,6 +5,15 @@ node_js:
 
 before_install:
   - "curl -L https://git.io/ejPSng | /bin/sh"
+  - "meteor create remote-app"
+  - "cd remote-app"
+  - "meteor install"
+  - "meteor mongo"
+  - "db.createCollection('tests')"
+  - "db.tests.insert({name:'john doe'})"
+  - "exit"
+  - "meteor --port=3030"
+
 
 env:
   - CXX=g++-4.8
