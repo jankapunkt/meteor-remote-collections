@@ -28,7 +28,7 @@ before_script:
   - "echo before script"
 
 script:
-  - "meteor test-packages ./"
+  - "meteor test-packages --run-once"
 
 after_script:
   - "kill -9 `ps ax | grep node | grep meteor | awk '{print $1}'`"
