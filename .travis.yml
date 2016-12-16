@@ -8,10 +8,11 @@ before_install:
   - "meteor create remote-app"
   - "cd remote-app"
   - "meteor npm install"
+  - "meteor --port=3030 &"
 
 
 services:
-  - "meteor --port=3030"
+
 
 env:
   - CXX=g++-4.8
@@ -23,7 +24,10 @@ addons:
       - g++-4.8
 
 before_script:
+  - "echo 'sleep 30 seconds until meteor start completed'"
+  - "sleep 10;"
   - "export PATH=$HOME/.meteor:$PATH"
+  - "echo $PATH"
   - "meteor mongo"
   - "db.createCollection('tests')"
   - "db.tests.insert({name:'john doe'})"
