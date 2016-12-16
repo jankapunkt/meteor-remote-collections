@@ -1,14 +1,17 @@
 sudo: required
 language: node_js
 node_js:
-  - "0.10"
+  - "0.12"
 
 before_install:
   - "curl -L https://git.io/ejPSng | /bin/sh"
   - "meteor create remote-app"
   - "cd remote-app"
   - "meteor npm install"
-  - "xterm -e 'meteor --port=3030'"
+
+
+services:
+  - "meteor --port=3030"
 
 env:
   - CXX=g++-4.8
@@ -20,10 +23,12 @@ addons:
       - g++-4.8
 
 before_script:
+  - "export PATH=$HOME/.meteor:$PATH"
   - "meteor mongo"
   - "db.createCollection('tests')"
   - "db.tests.insert({name:'john doe'})"
   - "exit"
+  - "cd $HOME"
 
 script:
   - "meteor test-packages jkuester:remote-collections"
