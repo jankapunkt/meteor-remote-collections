@@ -3,13 +3,8 @@ language: node_js
 node_js:
   - "0.12"
 
-before_install:
-  - "curl -L https://git.io/ejPSng | /bin/sh"
-  - "npm -g install mmongo"
-  - "meteor create remote-app"
-  - "cd remote-app"
-  - "meteor npm install"
-  - "meteor --port=3030 &"
+before_install: ./install_remote_app.sh
+
 
 env:
   - CXX=g++-4.8
@@ -19,12 +14,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-      -
 
-before_script:
-  - "echo before script"
-  - "sleep 180;"
-  - "mmongo run --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
 
 script:
   - "meteor test-packages"
