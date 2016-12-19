@@ -7,8 +7,8 @@ before_install:
   - sh ./install_remote_app.sh
   - cd remote-app
   - meteor &
-  - sh ./timeout.sh
   - cd ..
+  - sh ./timeout.sh
 
 
 env:
