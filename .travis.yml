@@ -10,7 +10,7 @@ before_install:
   - "cd remote-app"
   - "meteor npm install"
   - "meteor --port=3030 &"
-  - "sleep 90;"
+  - "sleep 180;"
   - "mmongo run --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
 
 env:
