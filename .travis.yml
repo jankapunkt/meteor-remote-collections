@@ -23,7 +23,7 @@ addons:
 
 before_script:
   - "echo before script"
-  - "sleep 90;"
+  - "sleep 180;"
   - "mmongo run --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
 
 script:

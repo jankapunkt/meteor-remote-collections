@@ -20,7 +20,21 @@ const CURRENT_REMOTE_SUBSCRIBE_METHOD = "ddp.getAvailableSubscriptions";
 
 const EXPECTED_COLLECTION_NAME = "tests";
 
-GLOBAL_TEST_OBJ = {};
+
+
+const observe = {
+    added: function (item) {
+        //console.log('-- remote item added--');
+        //console.log(item);
+        //GLOBAL_TEST_OBJ.isNotNull(item);
+    },
+
+    removed: function (item) {
+        //console.log('-- remote items removed--');
+        //console.log(item);
+        //GLOBAL_TEST_OBJ.isNotNull(item);
+    }
+};
 
 //------------------------------------------------------------------//
 //  STARTUP SETTINGS
@@ -29,6 +43,7 @@ GLOBAL_TEST_OBJ = {};
 Meteor.startup(() => {
 
     Tinytest.add('remote-collections - subscriptions', function (test) {
+
         const results = RemoteCollections.loadRemoteSubscriptions({id: CURRENT_CONNECTION_ID, method: CURRENT_REMOTE_SUBSCRIBE_METHOD });
         testExists(test, results);
         test.equal(results[CURRENT_CONNECTION_ID], true);
@@ -65,10 +80,11 @@ Tinytest.add('remote-collections - import and initial status', function (test) {
     //importing a fresh RemoteCollections class
 
     testExists(test, RemoteCollections);
+    RemoteCollections.setDebug(true);
 
     const initialRemoteCollections = RemoteCollections.getCollections();
     testObjectHasChildren(test, initialRemoteCollections, 0);
-    test.equal(initialRemoteCollections, {});
+    test.equal(initialRemoteCollections, {}), "initial collection is not empty";
 
 });
 
@@ -78,59 +94,46 @@ Tinytest.add('remote-collections - create single remote ddp connections', functi
 
     RemoteCollections.addDDPConnectionURL(CURRENT_CONNECTION_ID, CURRENT_CONNECTION_URL);
     const connection = RemoteCollections.getDDPConnection(CURRENT_CONNECTION_ID);
-    testExists(test, connection);
+    testExists(test, connection, "connection");
 
     const allConnections = RemoteCollections.getAllDDPConnections();
     testObjectHasChildren(test, allConnections, 1);
 
     //test.equal(connection.status().connected, true, "connection is not connected to remote " + CURRENT_CONNECTION_URL);
     //GLOBAL_TEST_OBJ = test;
-    const observe = {
-        added: function (item) {
-            //console.log('-- remote item added--');
-            //console.log(item);
-            //GLOBAL_TEST_OBJ.isNotNull(item);
-        }
-        ,
-
-        removed: function (item) {
-            //console.log('-- remote items removed--');
-            //console.log(item);
-            //GLOBAL_TEST_OBJ.isNotNull(item);
-        }
-        ,
-    };
 
     RemoteCollections.loadRemoteCollections({id:CURRENT_CONNECTION_ID, method:CURRENT_REMOTE_LOAD_METHOD, observe:observe});
     const collections = RemoteCollections.getCollections();
-    testExists(test, collections);
+    testExists(test, collections, "collections");
 
     const collectionsNames =  Object.keys(collections);
-    test.equal(collectionsNames.length, 1);
+    test.equal(collectionsNames.length, 1, "unexpected collection length: ");
 
     const currentCollectionName = collectionsNames[0];
-    testExists(test, currentCollectionName);
+    testExists(test, currentCollectionName, "currentCollectionName");
     test.equal(currentCollectionName, EXPECTED_COLLECTION_NAME);
 
     const currentCollection = collections[EXPECTED_COLLECTION_NAME];
-    testExists(test, currentCollection);
+    testExists(test, currentCollection, "currentCollection");
     test.notEqual(currentCollection.hasOwnProperty('find'), true);
 
     const found = currentCollection.find({});
-    testExists(test,found);
+    testExists(test,found, "found");
 
 });
 
 
 
-function testExists(test, obj){
-    test.isNotNull(obj);
-    test.isNotUndefined(obj);
+function testExists(test, obj, optionalName){
+    if (!optionalName)
+        optionalName = "";
+    test.isNotNull(obj, "unexpected object is null ("+optionalName+")");
+    test.isNotUndefined(obj, "unexpected: object is undefined ("+optionalName+")");
 }
 
 function testObjectHasChildren(test, obj, expectedChildCount){
     testExists(test, obj);
     const keys = Object.keys(obj);
     testExists(test, keys);
-    test.equal(keys.length, expectedChildCount);
+    test.equal(keys.length, expectedChildCount, "unexpected: childcount is " + keys.length+", expected is "+expectedChildCount);
 }
