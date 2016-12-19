@@ -114,7 +114,7 @@ class RemoteCollectionManager {
     _parseInputIds(idObj) {
         if (idObj === null || typeof idObj === 'undefined')
             return this.getAllDDPConnectionIds();
-        else if (idObj instanceof Array || Array.isArray(obj))
+        else if (idObj instanceof Array || Array.isArray(idObj))
             return idObj;//call multiple from array
         else
             return [idObj];
