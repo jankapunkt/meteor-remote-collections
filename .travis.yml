@@ -3,7 +3,10 @@ language: node_js
 node_js:
   - "0.12"
 
-before_install: ./install_remote_app.sh
+before_install:
+  - sh ./install_remote_app.sh
+  - meteor &
+  - sh ./timeout.sh
 
 
 env:
