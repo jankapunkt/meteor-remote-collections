@@ -10,8 +10,6 @@ before_install:
   - "cd remote-app"
   - "meteor npm install"
   - "meteor --port=3030 &"
-  - "sleep 180;"
-  - "mmongo run --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
 
 env:
   - CXX=g++-4.8
@@ -25,8 +23,11 @@ addons:
 
 before_script:
   - "echo before script"
+  - "sleep 90;"
+  - "mmongo run --eval 'db.createCollection('tests');db.tests.insert({name:'john doe'});exit'"
 
 script:
+  - "echo run script"
   - "meteor test-packages"
 
 after_script:
