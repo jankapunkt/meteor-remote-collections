@@ -6,7 +6,7 @@ node_js:
 before_install:
   - sh ./install_remote_app.sh
   - cd remote-app
-  - meteor &
+  - meteor --port=3030 &
   - cd ..
   - sh ./timeout.sh
 
