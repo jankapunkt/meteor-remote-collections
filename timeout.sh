@@ -12,4 +12,6 @@ echo "Meteor finally launched"
 echo "*************************************************************"
 echo "INJECT INITIAL MONGO COLLECTION AND DATA"
 echo "*************************************************************"
+cd remote-app
 mmongo run --eval 'db.createCollection("tests");db.tests.insert({name:"john doe"});exit'
+cd ..
