@@ -28,6 +28,8 @@ echo "*************************************************************"
 
 meteor create remote-app
 cd remote-app
+
+# add default provider, so functions are available on startup
 meteor add jkuester:remote-collections-provider
 meteor npm install
 
