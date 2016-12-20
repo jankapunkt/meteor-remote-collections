@@ -15,8 +15,9 @@ import {RemoteCollections} from "meteor/jkuester:remote-collections";
 const CURRENT_CONNECTION_ID = "tinytest-current-connection";
 const CURRENT_CONNECTION_URL = "http://localhost:3030";
 
-const CURRENT_REMOTE_LOAD_METHOD = 'ddp.getPrivateDatabases';
-const CURRENT_REMOTE_SUBSCRIBE_METHOD = "ddp.getAvailableSubscriptions";
+const CURRENT_REMOTE_LOAD_METHOD =      'RemoteProvider.getPrivateDatabases';
+const CURRENT_REMOTE_SUBSCRIBE_METHOD = "RemoteProvider.getAvailableSubscriptions";
+const HAS_REMOTE_COLLECTIONS_PROVIDER = "RemoteProvider.hasRemoteCollectionsProvider";
 
 const EXPECTED_COLLECTION_NAME = "tests";
 

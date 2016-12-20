@@ -13,11 +13,19 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.4.2.3');
   api.use('ecmascript');
+  api.use('check');
+  api.use('mongo');
+  api.use('ddp-client');
+  //api.use('audit-argument-checks');
   api.mainModule('remote-collections.js', ['server']);
 });
 
 Package.onTest(function(api) {
   api.use('ecmascript');
+  api.use('check');
+  api.use('mongo');
+  api.use('ddp-client');
+  //api.use('audit-argument-checks');
   api.use('tinytest');
   api.use('jkuester:remote-collections');
   api.mainModule('remote-collections-tests.js', 'server');

@@ -1,6 +1,7 @@
 
 import {Mongo} from 'meteor/mongo';
-import {DDP} from 'meteor/ddp-client'
+import {DDP} from 'meteor/ddp-client';
+import {check} from 'meteor/check';
 
 class RemoteCollectionManager {
     constructor() {
@@ -32,6 +33,7 @@ class RemoteCollectionManager {
      * @returns {null|any|*}
      */
     getDDPConnection(id) {
+        check(id, String);
         return this.remotes[id];
     }
 
@@ -46,10 +48,39 @@ class RemoteCollectionManager {
         return this.remotes;
     }
 
+    /**
+     *
+     * @param connectionId
+     * @param remoteMethodName
+     * @returns {boolean}
+     */
+    getRemoteHasMethod(connectionId, remoteMethodName){
+        check(connectionId, String);
+        check(remoteMethodName, String);
+        const connection = this.remotes[connectionId];
+        if (!connection)
+            throw new Meteor.Error("Unexpected call to undefined DDP connection: "+connectionId);
+        try {
+            const remoteMethodCall = connection.call(remoteMethodName);
+            return (remoteMethodCall === null || typeof remoteMethodCall === 'undefined');
+        } catch(e){
+            if (this.debug) {
+                console.log(e.message);
+                console.log(e.stack);
+            }
+            return false;
+        }
+    }
+
     getAllSubscriptions(){
         return this.subscriptions;
     }
 
+    /**
+     * Returns a subscription method by a given id
+     * @param id
+     * @returns {*}
+     */
     getSubscriptionsById(id){
         return this.subscriptions[id];
     }
@@ -59,6 +90,7 @@ class RemoteCollectionManager {
      * @param value boolean, true for debugging
      */
     setDebug(value) {
+        check(value, Boolean);
         this.debug = value;
     }
 
@@ -67,6 +99,8 @@ class RemoteCollectionManager {
      * @param urlString The full url to connect via ddp
      */
     addDDPConnectionURL(id, urlString) {
+        check(id, String);
+        check(urlString, String); //FIXME this should check agains a url regex
         this.remotes[id] = DDP.connect(urlString);
     }
 
@@ -78,6 +112,11 @@ class RemoteCollectionManager {
      * @returns {{}} Returns an object with id-boolean pairs. (For each id a result value is attached.)
      */
     loadRemoteCollections(params) {
+        check(params, {
+            id: String,
+            method: String,
+            observe: Match.Maybe(Object)
+        });
         return this._loadRemote(params, this._loadCollection);
     }
 
@@ -88,14 +127,31 @@ class RemoteCollectionManager {
      * @returns {{}} Returns an object with id-boolean pairs. (For each id a result value is attached.)
      */
     loadRemoteSubscriptions(params) {
+        check(params, {
+            id: String,
+            method: String,
+            observe: Match.Maybe(Object)
+        });
         return this._loadRemote(params, this._loadRemoteSubscription);
     }
 
+    /**
+     * TODO
+     * @param params
+     * @param fct
+     * @returns {{}}
+     * @private
+     */
     _loadRemote(params, fct){
+        check(params, {
+            id: String,
+            method: String,
+            observe: Match.Maybe(Object)
+        });
+        check(fct, Function);
         this._checkInputParams(params); //throw errors if wrong
         let results = {};
         const ids = this._parseInputIds(params.id);
-        console.log("load remote");
         for (let currentId of ids) {
 
             results[currentId] = fct.call(this, currentId, params.method, params.observe);
@@ -105,6 +161,11 @@ class RemoteCollectionManager {
     }
 
     _checkInputParams(params) {
+        check(params, {
+            id: String,
+            method: String,
+            observe: Match.Maybe(Object)
+        });
         if (!params)
             throw new Meteor.Error("Must set a parameter object!");
         if (!params.method)
@@ -112,6 +173,7 @@ class RemoteCollectionManager {
     }
 
     _parseInputIds(idObj) {
+        check(idObj, Match.OneOf(null, undefined, [String], String));
         if (idObj === null || typeof idObj === 'undefined')
             return this.getAllDDPConnectionIds();
         else if (idObj instanceof Array || Array.isArray(idObj))
@@ -121,10 +183,13 @@ class RemoteCollectionManager {
     }
 
     _loadCollection( id, remoteMethodName, observeFct) {
+        check(id, String);
+        check(remoteMethodName, String);
+        check(observeFct, Match.Maybe(Object));
         try {
             const remote = this.remotes[id];
             if (!remote)
-                throw new Meteor.Error("Connection by id not found, did you add any?");
+                throw new Meteor.Error("Connection by id [" + id + "] not found, did you add any?");
 
             const collections = remote.call(remoteMethodName);
             if (!collections)
@@ -134,7 +199,7 @@ class RemoteCollectionManager {
                 console.log(collectionName+" found");
                 this.REMOTE_COLLECTIONS[collectionName] = new Mongo.Collection(collectionName, {connection: remote});
                 if (!observeFct && this.debug)
-                    observeFct = debugObserveFct;
+                    observeFct = this.debugObserveFct;
                 if (observeFct)
                     this.REMOTE_COLLECTIONS[collectionName].find().observe(observeFct);
             }
@@ -148,7 +213,8 @@ class RemoteCollectionManager {
     }
 
     _loadRemoteSubscription(id, subscriptionName) {
-        console.log("LOAD SUB: "+id+" / "+subscriptionName);
+        check(id, String);
+        check(subscriptionName, String);
         try {
             const remote = this.remotes[id];
             if (!remote)
