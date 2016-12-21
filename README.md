@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jankapunkt/meteor-remote-collections.svg?branch=master)](https://travis-ci.org/jankapunkt/meteor-remote-collections)
 [![Code Climate](https://codeclimate.com/github/jankapunkt/meteor-remote-collections/badges/gpa.svg)](https://codeclimate.com/github/jankapunkt/meteor-remote-collections)
 [![Test Coverage](https://codeclimate.com/github/jankapunkt/meteor-remote-collections/badges/coverage.svg)](https://codeclimate.com/github/jankapunkt/meteor-remote-collections/coverage)
 [![Issue Count](https://codeclimate.com/github/jankapunkt/meteor-remote-collections/badges/issue_count.svg)](https://codeclimate.com/github/jankapunkt/meteor-remote-collections)
