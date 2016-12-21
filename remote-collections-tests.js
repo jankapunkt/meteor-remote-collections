@@ -4,8 +4,7 @@ import {Tinytest} from "meteor/tinytest";
 
 // Import and rename a variable exported by remote-collections.js.
 import {RemoteCollections} from "meteor/jkuester:remote-collections";
-
-
+import {RemoteCollectionsProvider} from 'meteor/jkuester:remote-collections-provider';
 //------------------------------------------------------------------//
 //  GLOBAL USAGE AMONG ALL TESTS
 //------------------------------------------------------------------//
@@ -15,11 +14,11 @@ import {RemoteCollections} from "meteor/jkuester:remote-collections";
 const CURRENT_CONNECTION_ID = "tinytest-current-connection";
 const CURRENT_CONNECTION_URL = "http://localhost:3030";
 
-const CURRENT_REMOTE_LOAD_METHOD =      'RemoteProvider.getPrivateDatabases';
-const CURRENT_REMOTE_SUBSCRIBE_METHOD = "RemoteProvider.getAvailableSubscriptions";
-const HAS_REMOTE_COLLECTIONS_PROVIDER = "RemoteProvider.hasRemoteCollectionsProvider";
+const CURRENT_REMOTE_LOAD_METHOD =      RemoteCollectionsProvider.DEFAULT_GET_COLLECTIONS;  // 'RemoteProvider.getPrivateDatabases';
+const CURRENT_REMOTE_SUBSCRIBE_METHOD = RemoteCollectionsProvider.DEFAULT_GET_PUBLICATIONS; //"RemoteProvider.getAvailableSubscriptions";
+const HAS_REMOTE_COLLECTIONS_PROVIDER = RemoteCollectionsProvider.HAS_REMOTE_COLLECTIONS_PROVIDER; //"RemoteProvider.hasRemoteCollectionsProvider";
 
-const EXPECTED_COLLECTION_NAME = "tests";
+const EXPECTED_COLLECTION_NAME = RemoteCollectionsProvider.DEFAULT_COLLECTION; //"tests";
 
 
 
@@ -50,7 +49,9 @@ Meteor.startup(() => {
         test.equal(results[CURRENT_CONNECTION_ID], true);
 
         const subscriptions = RemoteCollections.getSubscriptionsById(CURRENT_CONNECTION_ID);
+        console.log(subscriptions);
         testExists(test, subscriptions, "subscriptions");
+        testObjectHasChildren(test, subscriptions, 1);
 
         const collections = RemoteCollections.getCollections();
         testExists(test, collections, "collections");

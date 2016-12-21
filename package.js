@@ -28,5 +28,6 @@ Package.onTest(function(api) {
   //api.use('audit-argument-checks');
   api.use('tinytest');
   api.use('jkuester:remote-collections');
+    api.use('jkuester:remote-collections-provider');
   api.mainModule('remote-collections-tests.js', 'server');
 });

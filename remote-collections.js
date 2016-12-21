@@ -222,11 +222,15 @@ class RemoteCollectionManager {
 
             //get all subscriptions
             let availableSubscriptions = remote.call(subscriptionName);
+            console.log(availableSubscriptions);
             if (!availableSubscriptions)
                 throw new Meteor.Error("No subscriptions for name ["+subscriptionName+"] have been found.");
+            if (availableSubscriptions.length === 0)
+                this.subscriptions[id] = {};
 
             //if there are any, subscribe now!
             for (let subsciptionName of availableSubscriptions) {
+                console.log(subsciptionName);
                 if (this.subscriptions[id] === null || typeof this.subscriptions[id] === 'undefined')
                     this.subscriptions[id] = {};
 
