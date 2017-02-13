@@ -24,6 +24,12 @@ class RemoteCollectionManager {
         this._loadRemoteSubscription = this._loadRemoteSubscription.bind(this);
     }
 
+    clear(){
+		this.REMOTE_COLLECTIONS = {};
+		this.remotes = {};
+		this.subscriptions = {};
+    }
+
     getCollections() {
         return this.REMOTE_COLLECTIONS;
     }

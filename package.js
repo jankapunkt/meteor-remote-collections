@@ -1,6 +1,6 @@
 Package.describe({
   name: 'jkuester:remote-collections',
-  version: '0.0.1',
+  version: '0.0.2',
   // Brief, one-line summary of the package.
   summary: 'Loads remote collections and subscribes via ddp. Allows multiple connections.',
   // URL to the Git repository containing the source code for this package.
