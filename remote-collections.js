@@ -25,6 +25,11 @@ class RemoteCollectionManager {
     }
 
     clear(){
+        const connections = Object.values(this.remotes);
+        for(let connection of connections){
+            connection.disconnect();
+        }
+
 		this.REMOTE_COLLECTIONS = {};
 		this.remotes = {};
 		this.subscriptions = {};
@@ -50,8 +55,12 @@ class RemoteCollectionManager {
     /**
      * Returns all added ddp connection objects.
      */
-    getAllDDPConnections() {
-        return this.remotes;
+    getAllDDPConnections(asArray=false) {
+        check(asArray, Boolean);
+        if (asArray)
+            return Object.values(this.remotes);
+        else
+            return this.remotes;
     }
 
     /**
@@ -108,6 +117,12 @@ class RemoteCollectionManager {
         check(id, String);
         check(urlString, String); //FIXME this should check agains a url regex
         this.remotes[id] = DDP.connect(urlString);
+    }
+
+    addDDPConnection(id, connection) {
+		check(id, String);
+		check(connection, Match.Any); //FIXME this should check against a connection obect
+        this.remotes[id] = connection;
     }
 
     /**
